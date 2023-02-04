@@ -1,5 +1,15 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class CompanyStats {
-    public double getAvgSalary(Employee[] employees) {
+    public Stats getStats(Employee[] employees) {
+        return new Stats(getAvgSalary(employees), getMinSalary(employees), getMaxSalary(employees),
+                getDepartmentEmployment(employees, "IT"), getDepartmentEmployment(employees, "Support"),
+                getDepartmentEmployment(employees, "Management"));
+    }
+
+    private double getAvgSalary(Employee[] employees) {
         double totalSalary = 0;
         int employeesNo = 0;
 
@@ -8,14 +18,14 @@ public class CompanyStats {
             employeesNo++;
         }
 
-        try {
+        if (employeesNo != 0) {
             return totalSalary / employeesNo;
-        } catch (ArithmeticException e) {
+        } else {
             return 0;
         }
     }
 
-    public double getMinSalary(Employee[] employees) {
+    private double getMinSalary(Employee[] employees) {
         double minSalary = 0;
 
         for (int i = 0; i < employees.length; i++) {
@@ -28,7 +38,7 @@ public class CompanyStats {
         return minSalary;
     }
 
-    public double getMaxSalary(Employee[] employees) {
+    private double getMaxSalary(Employee[] employees) {
         double maxSalary = 0;
 
         for (Employee employee : employees) {
@@ -39,14 +49,21 @@ public class CompanyStats {
         return maxSalary;
     }
 
-    public String getDepartmentEmployment(Employee[] employees, String department) {
+    private int getDepartmentEmployment(Employee[] employees, String department) {
         int employeeNo = 0;
         for (Employee employee : employees) {
             if (department.equals(employee.getDepartment())) {
                 employeeNo++;
             }
         }
-        return "Liczba pracowników " + department + ": " + employeeNo;
+//        return "Liczba pracowników " + department + ": " + employeeNo;
+        return employeeNo;
+    }
+
+    public static void saveStats(Stats stats, File file) throws IOException {
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(stats.toString());
+        fileWriter.close();
     }
 
 }
